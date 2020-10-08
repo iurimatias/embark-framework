@@ -5,6 +5,7 @@ const MyToken = artifacts.require('MyToken');
 const MyToken2 = artifacts.require('MyToken2');
 const AlreadyDeployedToken = artifacts.require('AlreadyDeployedToken');
 const Test = artifacts.require('Test');
+const TestOnDeploy = artifacts.require('TestOnDeploy');
 const SomeContract = artifacts.require('SomeContract');
 
 config({
@@ -40,6 +41,13 @@ config({
       },
       Test: {
         onDeploy: ["Test.methods.changeAddress('$MyToken').send()", "Test.methods.changeENS('embark.eth').send()"]
+      },
+      TestOnDeploy: {
+        instanceOf: "Test",
+        onDeploy: async ({contracts, _web3, _logger}) => {
+          await contracts.TestOnDeploy.methods.changeAddress(contracts.MyToken.options.address).send();
+        },
+        deps: ["MyToken"]
       },
       ContractArgs: {
         args: {
@@ -94,6 +102,11 @@ describe("Token", function() {
 
     it("should use onDeploy", async function() {
       const result = await Test.methods.addr().call();
+      assert.strictEqual(result, MyToken.options.address);
+    });
+
+    it("should use onDeploy with function", async function() {
+      const result = await TestOnDeploy.methods.addr().call();
       assert.strictEqual(result, MyToken.options.address);
     });
 
