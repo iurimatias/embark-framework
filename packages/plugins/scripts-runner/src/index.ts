@@ -182,6 +182,9 @@ export default class ScriptsRunnerPlugin {
 
     dependencies.web3 = await this.web3;
 
+    const accounts = await dependencies.web3.eth.getAccounts();
+    dependencies.web3.eth.defaultAccount = accounts[0];
+
     for (const contract of contracts) {
       const registeredInVM = this.checkContractRegisteredInVM(contract);
       if (!registeredInVM) {

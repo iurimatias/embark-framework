@@ -364,7 +364,7 @@ class EmbarkController {
 
     const engine = new Engine({
       env: options.env,
-      embarkConfig: options.embarkConfig || 'embark.json'
+      embarkConfig: this.embarkConfig
     });
 
     engine.init({}, () => {
@@ -372,7 +372,7 @@ class EmbarkController {
         disableServiceMonitor: true
       });
       engine.registerModuleGroup("stackComponents");
-      engine.registerModuleGroup("blockchain");
+      engine.registerModulePackage("embark-ganache");
       engine.registerModuleGroup("compiler");
       engine.registerModuleGroup("contracts");
       engine.registerModulePackage('embark-deploy-tracker', {
